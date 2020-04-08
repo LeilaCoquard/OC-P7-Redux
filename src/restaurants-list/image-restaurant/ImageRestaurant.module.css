@@ -1,0 +1,25 @@
+hr {
+    width: 80%;
+    margin-top: 2px;
+}
+
+.hrfadein {
+    display: block;
+    transition: display 0.5s;
+}
+
+.hrfadeout {
+    display: none;
+    transition: display 0.5s;
+}
+
+.image {
+    overflow: scroll;
+    transition: max-height 0.5s ease-out;
+    height: auto;
+    max-height: 0px;
+}
+
+.active {
+    max-height: 200px;
+}

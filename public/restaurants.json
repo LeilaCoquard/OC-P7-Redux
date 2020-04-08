@@ -1,0 +1,91 @@
+[{
+    "restaurantName": "Bronco",
+    "address": "39 Rue des Petites Écuries, 75010 Paris",
+    "lat": 48.8737815,
+    "long": 2.3501649,
+    "ratings": [{
+        "stars": 4,
+        "author": "Jenny",
+        "comment": "Un excellent restaurant, j'y reviendrai ! Par contre il vaut mieux aimer la viande."
+      },
+      {
+        "stars": 5,
+        "author": "Paul",
+        "comment": "Tout simplement mon restaurant préféré !"
+      }
+    ]
+  },
+  {
+    "restaurantName": "Babalou",
+    "address": "4 Rue Lamarck, 75018 Paris",
+    "lat": 48.8865035,
+    "long": 2.3442197,
+    "ratings": [{
+        "stars": 5,
+        "author": "Arthur",
+        "comment": "Une minuscule pizzeria délicieuse cachée juste à côté du Sacré choeur !"
+      },
+      {
+        "stars": 3,
+        "author": "Nestor",
+        "comment": "J'ai trouvé ça correct, sans plus"
+      }
+    ]
+  },
+  {
+    "restaurantName": "REV Café",
+    "address": "54ter Rue Robespierre, 93100 Montreuil",
+    "lat": 48.852988,
+    "long": 2.423495,
+    "ratings": [{
+        "stars": 5,
+        "author": "Aurélie",
+        "comment": "Ambiance calme et posée.  Un bar où l'on va avec son enfant en gardant l'esprit libre. Des prises partout pour recharger les appareil. De l'espace.  Quelques jouets et des livres sympa pour les enfants. Une interlude qui nous a fait du bien !"
+      },
+      {
+        "stars": 5,
+        "author": "Lisa",
+        "comment": "Un lieu où l'on se sent bien pour boire un verre, une limonade, une bière. Manger un morceau car les plats et les gâteaux sont frais. Bons. L'accueil est toujours souriant. On peut aussi travailler.  Bref on est là et on ne sent pas de pression pour consommer à tout prix . Ce café porte bien son nom !"
+      },
+      {
+        "stars": 4,
+        "author": "Mathilde",
+        "comment": "Espace très agréable. Lieux d'accueil de belles initiatives notamment à destination des familles. Les lieux d'échange comme celui-ci sont rares."
+      }
+    ]
+  },
+  {
+    "restaurantName": "Alimentari",
+    "address": "6 Place du Marché, 93100 Montreuil",
+    "lat": 48.858164,
+    "long": 2.434172,
+    "ratings": [{
+        "stars": 5,
+        "author": "Paolo",
+        "comment": "La meilleure pizza de Montreuil. Tout simplement !"
+      },
+      {
+        "stars": 4,
+        "author": "Raphaëlle",
+        "comment": "Belle ambiance, bonnes pizza, de bons vins, un service accueillant et souriant."
+      }
+    ]
+  },
+  {
+    "restaurantName": "Chicken’s king",
+    "address": "137 Bis Rue de Paris, 93100 Montreuil",
+    "lat": 48.856145,
+    "long": 2.425571,
+    "ratings": [{
+        "stars": 1,
+        "author": "Enzo",
+        "comment": "Not good"
+      },
+      {
+        "stars": 3,
+        "author": "Jordan",
+        "comment": "OK"
+      }
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+.Header {
+    display: flex;
+    align-items: center;
+}
+
+.App-logo {
+    width: 35px;
+    height: 100%;
+    margin: 0px 6px;
+}
+
+h3 {
+    margin: 15px;
+}

@@ -1,0 +1,11 @@
+.restaurantBox {
+    box-shadow: inset 0 0 0 1px darkgray;
+    padding: 5px;
+    margin: 5px;
+}
+
+.selectRestaurant {
+    box-shadow: inset 0 0 0 3px darkgray;
+    padding: 5px;
+    margin: 5px;
+}
