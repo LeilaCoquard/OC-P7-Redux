@@ -1,25 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Map, Marker, GoogleApiWrapper } from "google-maps-react";
 import {
   selectRestaurants,
-  setHighlightRestaurant,
-  setSelectedRestaurant,
   setFormRestaurantActive,
-  selectHighlightRestaurant,
-  selectSelectedRestaurant,
-  selectFormRestaurantActive
+  selectFormRestaurantActive,
+  addGoogleRestaurants
 } from "../restaurants-list/restaurantListSlice";
-import { setMapReady, setBounds } from "./mapSlice";
+import { setMapReady, setBounds, selectMap } from "./mapSlice";
 import ModalPortal from "../portal/ModalPortal";
 import { FormAddRestaurant } from "../restaurants-list/form-add-restaurant/FormAddRestaurant";
+import MarkerRestaurant from "./MarkerRestaurant";
 
 export function MapContainer(props) {
   const dispatch = useDispatch();
   const restaurants = useSelector(selectRestaurants);
-  let highlightRestaurant = useSelector(selectHighlightRestaurant);
-  let selectedRestaurant = useSelector(selectSelectedRestaurant);
   let formRestaurantActive = useSelector(selectFormRestaurantActive);
+  let map = useSelector(selectMap);
 
   const [geolocation, setGeolocation] = useState({
     lat: 48.859788,
@@ -27,9 +24,39 @@ export function MapContainer(props) {
   });
 
   const [newRestaurantLatLng, setNewRestaurantLatLng] = useState({
-    lat: "",
-    lng: ""
+    lat: 48.859788,
+    lng: 2.426219
   });
+
+  const fetchPlaces = useCallback(() => {
+    const service = new props.google.maps.places.PlacesService(map);
+
+    let request = {
+      location: {
+        lat: map.center.lat(),
+        lng: map.center.lng()
+      },
+      radius: "500",
+      type: "restaurant"
+    };
+
+    service.nearbySearch(request, function(result) {
+      dispatch(
+        addGoogleRestaurants(
+          result.map(({ place_id, name, vicinity, geometry, rating }) => ({
+            place_id,
+            name,
+            vicinity,
+            rating,
+            lat: geometry.location.lat(),
+            long: geometry.location.lng()
+          }))
+        )
+      );
+    });
+    // googleRestaurants = result.map(restaurant =>
+    //   service.getDetails({ placeId: restaurant.place_id }, function(){return result}
+  }, [props.google, map, dispatch]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -42,12 +69,18 @@ export function MapContainer(props) {
     }
   }, []);
 
+  useEffect(() => {
+    if (map) {
+      fetchPlaces();
+    }
+  }, [map, fetchPlaces, geolocation]);
+
   return (
     <>
       <Map
         containerStyle={containerStyle}
         google={props.google}
-        zoom={14}
+        zoom={15}
         center={geolocation}
         initialCenter={geolocation}
         onReady={(_, map) => {
@@ -72,39 +105,15 @@ export function MapContainer(props) {
           );
         }}
         onClick={(t, map, c) => {
-          dispatch(setFormRestaurantActive(true));
           setNewRestaurantLatLng({ lat: c.latLng.lat(), lng: c.latLng.lng() });
+          dispatch(setFormRestaurantActive(true));
         }}
+        onDragend={fetchPlaces}
       >
         <Marker name={"Your position"} position={geolocation} />
 
         {restaurants.map(restaurant => (
-          <Marker
-            name={restaurant.restaurantName}
-            title={restaurant.restaurantName}
-            key={restaurant.restaurantName}
-            position={{ lat: restaurant.lat, lng: restaurant.long }}
-            icon={
-              highlightRestaurant === restaurant.restaurantName ||
-              selectedRestaurant === restaurant.restaurantName
-                ? { url: "restaurantBig.png" }
-                : { url: "restaurant.png" }
-            }
-            onMouseover={() => {
-              dispatch(setHighlightRestaurant(restaurant.restaurantName));
-            }}
-            onMouseout={() => {
-              dispatch(setHighlightRestaurant(null));
-            }}
-            onClick={() => {
-              if (selectedRestaurant === restaurant.restaurantName) {
-                dispatch(setSelectedRestaurant(null));
-                dispatch(setHighlightRestaurant(null));
-              } else {
-                dispatch(setSelectedRestaurant(restaurant.restaurantName));
-              }
-            }}
-          />
+          <MarkerRestaurant restaurant={restaurant} key={restaurant.id} />
         ))}
       </Map>
 
@@ -118,7 +127,9 @@ export function MapContainer(props) {
 }
 
 export default GoogleApiWrapper({
-  apiKey: "AIzaSyCaigs_WIRdg5EL906xTOQqpSQGzrKWzFY"
+  apiKey: "AIzaSyCaigs_WIRdg5EL906xTOQqpSQGzrKWzFY",
+  language: "fr",
+  libraries: ["places"]
 })(MapContainer);
 
 const containerStyle = {

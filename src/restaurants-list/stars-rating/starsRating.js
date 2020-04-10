@@ -2,8 +2,9 @@ import React from "react";
 import { getAverage } from "../restaurantListSlice";
 import { transformArray } from "../../utils";
 
-export function StarsRating({ ratings }) {
-  const average = (getAverage(ratings) * 2).toFixed(0) / 2;
+export function StarsRating({ ratings, googleRating }) {
+  const average =
+    ((googleRating ? googleRating : getAverage(ratings)) * 2).toFixed(0) / 2;
   const halfstar = average !== Math.round(getAverage(ratings));
   const starsFullArray = transformArray(Math.trunc(average));
 

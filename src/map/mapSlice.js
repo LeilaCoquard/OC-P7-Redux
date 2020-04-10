@@ -22,4 +22,6 @@ export const { setBounds } = slice.actions;
 export const selectMap = state =>
   state.googleMap.mapReady ? window.map : null;
 
+export const selectBounds = state => state.googleMap.bounds;
+
 export default slice.reducer;

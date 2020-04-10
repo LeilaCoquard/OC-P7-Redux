@@ -14,7 +14,13 @@ export const slice = createSlice({
   },
   reducers: {
     loadRestaurants: (state, action) => {
-      state.restaurants = [...state.restaurants, ...action.payload];
+      let loadingRestaurants = action.payload;
+      loadingRestaurants.forEach((restaurant, i) => {
+        restaurant.id = i;
+        restaurant.isLoadingReview = true;
+        restaurant.googleRating = undefined;
+      });
+      state.restaurants = [...state.restaurants, ...loadingRestaurants];
     },
     addRating: (state, action) => {
       let restaurant = state.restaurants.find(
@@ -27,8 +33,33 @@ export const slice = createSlice({
       });
     },
     addRestaurant: (state, action) => {
-      let restaurant = { ...action.payload, ratings: [] };
+      let restaurant = {
+        ...action.payload,
+        isLoadingReview: true,
+        ratings: [],
+        googleRating: null,
+        id: `${action.payload.lat}${action.payload.long}`
+      };
       state.restaurants.push(restaurant);
+      state.formRestaurantActive = false;
+    },
+    addGoogleRestaurants: (state, action) => {
+      action.payload.forEach(restaurant => {
+        if (
+          !state.restaurants.find(r => r.restaurantName === restaurant.name)
+        ) {
+          state.restaurants.push({
+            id: restaurant.place_id,
+            restaurantName: restaurant.name,
+            address: restaurant.vicinity,
+            lat: restaurant.lat,
+            long: restaurant.long,
+            googleRating: restaurant.rating,
+            isLoadingReview: false,
+            ratings: []
+          });
+        }
+      });
     },
     setHighlightRestaurant: (state, action) => {
       state.highlightRestaurant = action.payload;
@@ -52,6 +83,7 @@ export const {
   loadRestaurants,
   addRating,
   addRestaurant,
+  addGoogleRestaurants,
   setHighlightRestaurant,
   setSelectedRestaurant,
   setRangeFilter,

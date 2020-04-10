@@ -1,25 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setFormRestaurantActive, addRestaurant } from "../restaurantListSlice";
 import axios from "axios";
+import GooglePlacesAutocomplete, {
+  geocodeByAddress
+} from "react-google-places-autocomplete";
 
 export function FormAddRestaurant({ latLng }) {
   const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [{ lat, lng }, setLatLng] = useState({
+    lat: latLng.lat,
+    lng: latLng.lng
+  });
   const closeModal = () => {
     dispatch(setFormRestaurantActive(false));
   };
 
-  if (latLng.lat !== "") {
-    axios
-      .get(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latLng.lat},${latLng.lng}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCaigs_WIRdg5EL906xTOQqpSQGzrKWzFY`
-      )
-      .then(res => {
-        setAddress(res.data.results[0].formatted_address);
+  useEffect(() => {
+    if (latLng.lat !== "") {
+      axios
+        .get(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latLng.lat},${latLng.lng}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCaigs_WIRdg5EL906xTOQqpSQGzrKWzFY`
+        )
+        .then(res => {
+          setAddress(res.data.results[0].formatted_address);
+        });
+    }
+  }, [latLng.lat, latLng.lng]);
+
+  const getLatLong = newAddress => {
+    geocodeByAddress(newAddress).then(results => {
+      setLatLng({
+        lat: results[0].geometry.location.lat(),
+        lng: results[0].geometry.location.lng()
       });
-  }
+    });
+  };
 
   return (
     <>
@@ -43,16 +61,17 @@ export function FormAddRestaurant({ latLng }) {
               value={name}
               onChange={e => setName(e.target.value)}
             />
-            <input
-              className="input"
+            <GooglePlacesAutocomplete
+              inputClassName="input"
               type="text"
               placeholder={address}
-              style={{ marginBottom: "5px" }}
-              value={address}
-              onChange={e => setAddress(e.target.value)}
-              readOnly
+              inputStyle={{ marginBottom: "5px" }}
+              initialValue={address}
+              onSelect={({ description }) => {
+                setAddress(description);
+                getLatLong(description);
+              }}
             />
-            {/* <br /> */}
           </section>
           <footer className="modal-card-foot">
             <button
@@ -62,12 +81,13 @@ export function FormAddRestaurant({ latLng }) {
                   addRestaurant({
                     restaurantName: name,
                     address: address,
-                    lat: latLng.lat,
-                    long: latLng.lng
+                    lat: lat,
+                    long: lng
                   })
                 );
                 setName("");
                 setAddress("");
+                setLatLng({ lat: "", lng: "" });
                 closeModal();
               }}
             >

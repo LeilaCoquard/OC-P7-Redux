@@ -48,8 +48,11 @@ export function Restaurant({ restaurant }) {
       onMouseLeave={() => toggleHover()}
     >
       <h3>{restaurant.restaurantName}</h3>
-      {restaurant.ratings.length !== 0 ? (
-        <StarsRating ratings={restaurant.ratings} />
+      {restaurant.ratings.length || restaurant.googleRating ? (
+        <StarsRating
+          ratings={restaurant.ratings}
+          googleRating={restaurant.googleRating}
+        />
       ) : (
         <p>- No rating -</p>
       )}
