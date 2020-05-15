@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setFormRestaurantActive, addRestaurant } from "../restaurantListSlice";
+import {
+  setFormRestaurantActive,
+  addRestaurant,
+} from "../redux/restaurantListSlice";
 import axios from "axios";
 import GooglePlacesAutocomplete, {
-  geocodeByAddress
+  geocodeByAddress,
 } from "react-google-places-autocomplete";
+import { API_KEY } from "../constants";
 
 export function FormAddRestaurant({ latLng }) {
   const dispatch = useDispatch();
@@ -12,7 +16,7 @@ export function FormAddRestaurant({ latLng }) {
   const [address, setAddress] = useState("");
   const [{ lat, lng }, setLatLng] = useState({
     lat: latLng.lat,
-    lng: latLng.lng
+    lng: latLng.lng,
   });
   const closeModal = () => {
     dispatch(setFormRestaurantActive(false));
@@ -22,19 +26,19 @@ export function FormAddRestaurant({ latLng }) {
     if (latLng.lat !== "") {
       axios
         .get(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latLng.lat},${latLng.lng}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyCaigs_WIRdg5EL906xTOQqpSQGzrKWzFY`
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latLng.lat},${latLng.lng}&location_type=ROOFTOP&result_type=street_address&key=${API_KEY}`
         )
-        .then(res => {
+        .then((res) => {
           setAddress(res.data.results[0].formatted_address);
         });
     }
   }, [latLng.lat, latLng.lng]);
 
-  const getLatLong = newAddress => {
-    geocodeByAddress(newAddress).then(results => {
+  const getLatLong = (newAddress) => {
+    geocodeByAddress(newAddress).then((results) => {
       setLatLng({
         lat: results[0].geometry.location.lat(),
-        lng: results[0].geometry.location.lng()
+        lng: results[0].geometry.location.lng(),
       });
     });
   };
@@ -59,7 +63,7 @@ export function FormAddRestaurant({ latLng }) {
               placeholder="Nom du restaurant"
               style={{ marginBottom: "5px" }}
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
             />
             <GooglePlacesAutocomplete
               inputClassName="input"
@@ -82,7 +86,7 @@ export function FormAddRestaurant({ latLng }) {
                     restaurantName: name,
                     address: address,
                     lat: lat,
-                    long: lng
+                    long: lng,
                   })
                 );
                 setName("");

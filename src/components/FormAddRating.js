@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import {
   setFormRatingActive,
-  selectSelectedRestaurant,
-  addRating
-} from "../restaurantListSlice";
+  selectSelectedRestaurantId,
+  selectSelectedRestaurantName,
+  addRating,
+} from "../redux/restaurantListSlice";
 import { useSelector, useDispatch } from "react-redux";
 
 export function FormAddRating() {
   const dispatch = useDispatch();
-  const selectedRestaurant = useSelector(selectSelectedRestaurant);
+  const selectedRestaurantId = useSelector(selectSelectedRestaurantId);
+  const selectedRestaurantName = useSelector(selectSelectedRestaurantName);
 
   const [name, setName] = useState("");
   const [rating, setRating] = useState("");
@@ -24,7 +26,7 @@ export function FormAddRating() {
         <div className="modal-background" onClick={closeModal}></div>
         <div className="modal-card">
           <header className="modal-card-head">
-            <p className="modal-card-title">{selectedRestaurant}</p>
+            <p className="modal-card-title">{selectedRestaurantName}</p>
             <button
               className="delete"
               aria-label="close"
@@ -38,13 +40,13 @@ export function FormAddRating() {
               placeholder="Mon nom"
               style={{ marginBottom: "5px" }}
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
             />
             <br />
             <div className="select" style={{ marginBottom: "5px" }}>
               <select
                 value={rating}
-                onChange={e => setRating(parseInt(e.target.value))}
+                onChange={(e) => setRating(parseInt(e.target.value))}
               >
                 <option value={""}>Ma note</option>
                 <option value={0}>0</option>
@@ -61,7 +63,7 @@ export function FormAddRating() {
               style={{ marginBottom: "5px" }}
               rows="3"
               value={comment}
-              onChange={e => setComment(e.target.value)}
+              onChange={(e) => setComment(e.target.value)}
             ></textarea>
           </section>
           <footer className="modal-card-foot">
@@ -70,10 +72,10 @@ export function FormAddRating() {
               onClick={() => {
                 dispatch(
                   addRating({
-                    restaurantName: selectedRestaurant,
+                    id: selectedRestaurantId,
                     stars: rating,
                     author: name,
-                    comment: comment
+                    comment: comment,
                   })
                 );
                 setName("");

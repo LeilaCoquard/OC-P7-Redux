@@ -5,27 +5,29 @@ import {
   selectRestaurants,
   setFormRestaurantActive,
   selectFormRestaurantActive,
-  addGoogleRestaurants
-} from "../restaurants-list/restaurantListSlice";
-import { setMapReady, setBounds, selectMap } from "./mapSlice";
-import ModalPortal from "../portal/ModalPortal";
-import { FormAddRestaurant } from "../restaurants-list/form-add-restaurant/FormAddRestaurant";
-import MarkerRestaurant from "./MarkerRestaurant";
+  addGoogleRestaurants,
+} from "../redux/restaurantListSlice";
+import { setMapReady, setBounds, selectMap } from "../redux/mapSlice";
+import ModalPortal from "../ModalPortal";
+import { FormAddRestaurant } from "../components/FormAddRestaurant";
+import MarkerRestaurant from "../components/MarkerRestaurant";
+import styles from "./map.module.css";
+import { API_KEY } from "../constants";
 
 export function MapContainer(props) {
   const dispatch = useDispatch();
   const restaurants = useSelector(selectRestaurants);
-  let formRestaurantActive = useSelector(selectFormRestaurantActive);
-  let map = useSelector(selectMap);
+  const formRestaurantActive = useSelector(selectFormRestaurantActive);
+  const map = useSelector(selectMap);
 
   const [geolocation, setGeolocation] = useState({
     lat: 48.859788,
-    lng: 2.426219
+    lng: 2.426219,
   });
 
   const [newRestaurantLatLng, setNewRestaurantLatLng] = useState({
     lat: 48.859788,
-    lng: 2.426219
+    lng: 2.426219,
   });
 
   const fetchPlaces = useCallback(() => {
@@ -34,38 +36,53 @@ export function MapContainer(props) {
     let request = {
       location: {
         lat: map.center.lat(),
-        lng: map.center.lng()
+        lng: map.center.lng(),
       },
       radius: "500",
-      type: "restaurant"
+      type: "restaurant",
     };
 
-    service.nearbySearch(request, function(result) {
+    service.nearbySearch(request, function (result) {
       dispatch(
         addGoogleRestaurants(
-          result.map(({ place_id, name, vicinity, geometry, rating }) => ({
-            place_id,
-            name,
-            vicinity,
-            rating,
-            lat: geometry.location.lat(),
-            long: geometry.location.lng()
-          }))
+          result.map(
+            ({
+              place_id,
+              name,
+              vicinity,
+              geometry,
+              rating,
+              user_ratings_total,
+            }) => ({
+              place_id,
+              name,
+              vicinity,
+              rating,
+              user_ratings_total,
+              lat: geometry.location.lat(),
+              long: geometry.location.lng(),
+            })
+          )
         )
       );
     });
-    // googleRestaurants = result.map(restaurant =>
-    //   service.getDetails({ placeId: restaurant.place_id }, function(){return result}
   }, [props.google, map, dispatch]);
 
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        setGeolocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        });
-      });
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          setGeolocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        function () {
+          alert(
+            "Veuillez activer votre geolocalisation pour afficher les restaurants autour de chez vous"
+          );
+        }
+      );
     }
   }, []);
 
@@ -78,7 +95,12 @@ export function MapContainer(props) {
   return (
     <>
       <Map
-        containerStyle={containerStyle}
+        className={styles.mapStyle}
+        containerStyle={{
+          position: undefined,
+          width: undefined,
+          height: undefined,
+        }}
         google={props.google}
         zoom={15}
         center={geolocation}
@@ -87,7 +109,7 @@ export function MapContainer(props) {
           const listener = props.google.maps.event.addListener(
             map,
             "bounds_changed",
-            function() {
+            function () {
               window.map = map;
               dispatch(setMapReady(true));
               props.google.maps.event.removeListener(listener);
@@ -98,7 +120,7 @@ export function MapContainer(props) {
           const listener = props.google.maps.event.addListener(
             map,
             "bounds_changed",
-            function() {
+            function () {
               dispatch(setBounds(window.map.getBounds().toJSON()));
               props.google.maps.event.removeListener(listener);
             }
@@ -112,7 +134,7 @@ export function MapContainer(props) {
       >
         <Marker name={"Your position"} position={geolocation} />
 
-        {restaurants.map(restaurant => (
+        {restaurants.map((restaurant) => (
           <MarkerRestaurant restaurant={restaurant} key={restaurant.id} />
         ))}
       </Map>
@@ -127,13 +149,7 @@ export function MapContainer(props) {
 }
 
 export default GoogleApiWrapper({
-  apiKey: "AIzaSyCaigs_WIRdg5EL906xTOQqpSQGzrKWzFY",
+  apiKey: API_KEY,
   language: "fr",
-  libraries: ["places"]
+  libraries: ["places"],
 })(MapContainer);
-
-const containerStyle = {
-  position: "absolute",
-  width: "70%",
-  height: "100%"
-};

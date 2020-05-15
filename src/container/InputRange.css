@@ -1,5 +1,6 @@
 .div-filter {
     display: flex;
+    overflow: hidden;
 }
 
 .fa-filter {
