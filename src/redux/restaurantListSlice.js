@@ -50,6 +50,7 @@ export const slice = createSlice({
         ratings: [],
         averageRating: undefined,
         id: `${action.payload.lat}${action.payload.long}`,
+        nbUserRating: 0,
       };
       state.restaurants.push(restaurant);
       state.formRestaurantActive = false;

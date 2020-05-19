@@ -22,6 +22,15 @@ export function FormAddRestaurant({ latLng }) {
     dispatch(setFormRestaurantActive(false));
   };
 
+  const getLatLong = (newAddress) => {
+    geocodeByAddress(newAddress).then((results) => {
+      setLatLng({
+        lat: results[0].geometry.location.lat(),
+        lng: results[0].geometry.location.lng(),
+      });
+    });
+  };
+
   useEffect(() => {
     if (latLng.lat !== "") {
       axios
@@ -33,15 +42,6 @@ export function FormAddRestaurant({ latLng }) {
         });
     }
   }, [latLng.lat, latLng.lng]);
-
-  const getLatLong = (newAddress) => {
-    geocodeByAddress(newAddress).then((results) => {
-      setLatLng({
-        lat: results[0].geometry.location.lat(),
-        lng: results[0].geometry.location.lng(),
-      });
-    });
-  };
 
   return (
     <>
