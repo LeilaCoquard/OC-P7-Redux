@@ -44,7 +44,6 @@ export function FormAddRestaurant({ latLng }) {
   }, [latLng.lat, latLng.lng]);
 
   return (
-    <>
       <div className="modal is-active">
         <div className="modal-background" onClick={closeModal}></div>
         <div className="modal-card">
@@ -103,6 +102,5 @@ export function FormAddRestaurant({ latLng }) {
           </footer>
         </div>
       </div>
-    </>
   );
 }

@@ -84,7 +84,7 @@ export function Restaurant({ restaurant }) {
       {restaurant.ratings.length || restaurant.averageRating ? (
         <StarsRating averageRating={restaurant.averageRating} />
       ) : (
-        <p>- No rating -</p>
+        <p>- Aucune note -</p>
       )}
       <div>
         <ImageRestaurant
