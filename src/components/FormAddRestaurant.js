@@ -69,6 +69,7 @@ export function FormAddRestaurant({ latLng }) {
               type="text"
               placeholder={address}
               inputStyle={{ marginBottom: "5px" }}
+              suggestionsStyles={{container:{cursor: "pointer"}}}
               initialValue={address}
               onSelect={({ description }) => {
                 setAddress(description);
