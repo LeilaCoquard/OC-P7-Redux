@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Map, Marker, GoogleApiWrapper } from "google-maps-react";
 import {
-  selectRestaurants,
+  selectFilterRestaurants,
   setFormRestaurantActive,
   selectFormRestaurantActive,
   addGoogleRestaurants,
@@ -16,7 +16,7 @@ import { API_KEY } from "../constants";
 
 export function MapContainer(props) {
   const dispatch = useDispatch();
-  const restaurants = useSelector(selectRestaurants);
+  const filteredRestaurants = useSelector(selectFilterRestaurants);
   const formRestaurantActive = useSelector(selectFormRestaurantActive);
   const map = useSelector(selectMap);
 
@@ -134,7 +134,7 @@ export function MapContainer(props) {
       >
         <Marker name={"Your position"} position={geolocation} />
 
-        {restaurants.map((restaurant) => (
+        {filteredRestaurants.map((restaurant) => (
           <MarkerRestaurant restaurant={restaurant} key={restaurant.id} />
         ))}
       </Map>
